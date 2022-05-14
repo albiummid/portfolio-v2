@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router'
-import React from 'react'
-import { useEffect } from 'react/cjs/react.production.min'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import LoadingSpinner from '../components/LoadingSpinner'
 import { isEmpty } from '../helpers/helpers'
 const userData = {
@@ -24,7 +23,7 @@ export default function Protected({
   const router = useRouter()
 
   const [isAllowed, setIsAllowed] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const { isAuthenticated } = { isAuthenticated: true }
 
   const fetchUserData = () => {
@@ -36,29 +35,37 @@ export default function Protected({
   }, [userData])
 
   useEffect(() => {
-    if (isAuthenticated && !isEmpty(userData) && !isEmpty(userType)) {
+    if (isAuthenticated && !isEmpty(userData)) {
+      setIsAllowed(true)
       if (Array.isArray(userType)) {
-        return setIsAllowed(
+        setIsAllowed(
           !isEmpty(userType.find((item) => item === userData.userType))
         )
       }
       if (typeof userType === 'number') {
-        return setIsAllowed(userType === userData.userType)
+        setIsAllowed(userType === userData.userType)
       }
       if (typeof userType === 'undefined') {
-        return setIsAllowed(true)
+        setIsAllowed(true)
       }
     }
-  }, [isAuthenticated, userData])
+    setLoading(false)
+  }, [isAuthenticated, userType, userData])
+
+  console.log(isAllowed)
+
+  useEffect(() => {
+    if (!loading && !isAllowed) {
+      if (needLoginOnly && !isAuthenticated) {
+        return router.push('/login')
+      }
+
+      !isEmpty(redirect) ? router.push(redirect) : router.back()
+    }
+  }, [loading, isAllowed, needLoginOnly, isAuthenticated, redirect, router])
 
   if (loading && !disableSpinner) return <LoadingSpinner />
   if (loading && disableSpinner) return null
-  if (!loading && !isAllowed) {
-    if (needLoginOnly && !isAuthenticated) {
-      return router.push('/login')
-    }
-    !isEmpty(redirect) ? router.push(redirect) : router.back()
-  }
 
   return <>{isAuthenticated && isAllowed && !loading && children}</>
 }

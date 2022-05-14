@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Protected from '../auth/Protected'
 
 export default function Home() {
   return (
@@ -9,9 +10,11 @@ export default function Home() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main>
-        <p className='text-red-500 bg-slate-600 w-full text-center '>
-          Albi is ready to go with Tailwind !!
-        </p>
+        <Protected>
+          <p className='text-red-500 bg-slate-600 w-full text-center '>
+            Albi is ready to go with Tailwind !!
+          </p>
+        </Protected>
       </main>
     </div>
   )

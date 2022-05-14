@@ -1,3 +1,5 @@
+export const isServer = typeof window === 'undefined'
+
 export const titleToUrl = (title) =>
   title?.trim().toLowerCase().replaceAll(' ', '-')
 export const urlToTitle = (title) =>
@@ -20,11 +22,13 @@ export const capitalizeFirstLetter = (
   locale = navigator?.language
 ) => first?.toLocaleUpperCase(locale) + rest.join('')
 
-export const appHost = window.location.origin
+export const appHost = !isServer && window.location.origin
 
 export const headers = {
   'Access-Control-Allow-Origin': '*',
-  Authorization: `Bearer ${window.localStorage.getItem('ACCESS_TOKEN')}`,
+  Authorization: `Bearer ${
+    !isServer && window.localStorage.getItem('ACCESS_TOKEN')
+  }`,
 }
 
 export const isEmpty = (value) => {
