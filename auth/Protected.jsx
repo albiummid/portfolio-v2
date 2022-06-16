@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import LoadingSpinner from '../components/LoadingSpinner'
 import { isEmpty } from '../helpers/helpers'
 const userData = {
@@ -50,7 +50,7 @@ export default function Protected({
       }
     }
     setLoading(false)
-  }, [isAuthenticated, userType, userData])
+  }, [isAuthenticated, userType])
 
   console.log(isAllowed)
 

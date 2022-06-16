@@ -1,5 +1,8 @@
 import Head from 'next/head'
 import Protected from '../auth/Protected'
+import dbConnect from '../config/dbConnect'
+
+dbConnect()
 
 export default function Home() {
   return (
